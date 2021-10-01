@@ -1,7 +1,11 @@
 package ni.edu.uca.tiempodepropinas
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.KeyEvent
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import ni.edu.uca.tiempodepropinas.databinding.ActivityMainBinding
 import java.text.NumberFormat
 import java.text.NumberFormat.*
@@ -15,10 +19,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.calcularBtn.setOnClickListener{ calcularPropina() }
+        binding.costoServicioEditText.setOnKeyListener{ view, keyCode, _ -> handleKeyEvent(view, keyCode)}
     }
 
     private fun calcularPropina() {
-        val textoEnTV = binding.costoServicio.text.toString()
+        val textoEnTV = binding.costoServicioEditText.text.toString()
         val costo = textoEnTV.toDoubleOrNull()
 
         if (costo == null || costo == 0.0){
@@ -44,4 +49,16 @@ class MainActivity : AppCompatActivity() {
         val propinaFormateada = NumberFormat.getCurrencyInstance().format(tip)
         binding.resultadoPropina.text = getString(R.string.propina, propinaFormateada)
     }
+
+    private fun handleKeyEvent(view: View, keyCode: Int): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_ENTER) {
+            // Hide the keyboard
+            val inputMethodManager =
+                getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+            return true
+        }
+        return false
+    }
+
 }
